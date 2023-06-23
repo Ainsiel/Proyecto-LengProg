@@ -1,5 +1,6 @@
-package com.mahiiru.sudokuapp.feature_sudoku.data.repository
+package com.mahiiru.sudokuapp.feature_sudoku.data.persistence
 
+import android.content.Context
 import com.mahiiru.sudokuapp.core.util.Resource
 import com.mahiiru.sudokuapp.feature_sudoku.domain.model.SudokuPuzzle
 import com.mahiiru.sudokuapp.feature_sudoku.domain.repository.ISudokuRepository
@@ -14,8 +15,11 @@ import java.io.ObjectOutputStream
 
 private const val FILE_NAME = "game_state.txt"
 
+
+//TODO Dagger Hilt
 class SudokuRepositoryImpl(
-    fileStorageDirectory: String,
+    private val context: Context,
+    fileStorageDirectory: String = context.filesDir.path,
     private val pathToStorageFile: File = File(fileStorageDirectory, FILE_NAME)
 ) : ISudokuRepository {
     override suspend fun updateGame(game: SudokuPuzzle): Flow<Resource<SudokuPuzzle>> = flow {
