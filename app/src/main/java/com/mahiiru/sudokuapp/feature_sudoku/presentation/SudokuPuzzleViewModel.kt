@@ -2,6 +2,7 @@ package com.mahiiru.sudokuapp.feature_sudoku.presentation
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.neverEqualPolicy
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,7 +20,7 @@ class SudokuPuzzleViewModel @Inject constructor(
     private val repository: ISudokuRepository
 ): ViewModel() {
 
-    var state by mutableStateOf(SudokuPuzzleState())
+    var state by mutableStateOf(SudokuPuzzleState(), neverEqualPolicy())
 
     init {
         getSudokuPuzzle()

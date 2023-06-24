@@ -1,6 +1,9 @@
 package com.mahiiru.sudokuapp.feature_sudoku.di
 
 import android.content.Context
+import com.mahiiru.sudokuapp.feature_sudoku.data.persistence.SudokuRepositoryImpl
+import com.mahiiru.sudokuapp.feature_sudoku.domain.repository.ISudokuRepository
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +18,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideContext(@ApplicationContext context: Context) : Context {
-        return context
+    fun provideISudokuRepository(@ApplicationContext context: Context): ISudokuRepository {
+        return SudokuRepositoryImpl(context)
     }
 }
