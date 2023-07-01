@@ -30,12 +30,47 @@ class SudokuPuzzleViewModel @Inject constructor(
 
     fun onEvent(event: SudokuPuzzleEvent){
         when (event){
-            is SudokuPuzzleEvent.OnInput -> TODO()
+            is SudokuPuzzleEvent.OnInput -> onInputTile(event.input)
             is SudokuPuzzleEvent.OnNewSudokuPuzzle -> rebuildNewPuzzle()
             is SudokuPuzzleEvent.OnSolveSudoku -> solvePuzzle()
             is SudokuPuzzleEvent.OnSudokuCompleted -> validatePuzzle()
-            is SudokuPuzzleEvent.OnTileFocused -> TODO()
+            is SudokuPuzzleEvent.OnTileFocused -> updateFocusState(event.x,event.y)
         }
+    }
+
+    private fun onInputTile(input: Int) {
+        var focusedTile : SudokuTile? = null
+        state.puzzle.forEach {
+            if (it.value.hasFocus) focusedTile = it.value
+        }
+        if (focusedTile != null) {
+            updateNodeData(focusedTile!!,input)
+        }
+    }
+
+    private fun updateNodeData(focusedTile: SudokuTile, input: Int) {
+        viewModelScope.launch {
+            repository.updateNode(
+                focusedTile.x,
+                focusedTile.y,
+                input
+            ).collect {
+                result ->
+                when (result) {
+                    is Resource.Error -> Unit
+                    is Resource.Loading -> state = state.copy(isLoading = result.isLoading)
+                    is Resource.Success -> state = state.copy(puzzle = getPuzzleFromData(result.data!!))
+                }
+            }
+        }
+    }
+
+    private fun updateFocusState(x: Int, y: Int) {
+        val puzzle = state.copy().puzzle
+        puzzle.forEach { (key,value) ->
+            value.hasFocus = value.x == x && value.y == y
+        }
+        state.copy(puzzle = puzzle)
     }
 
     private fun validatePuzzle() {
