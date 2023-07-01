@@ -4,6 +4,7 @@ import android.content.Context
 import com.mahiiru.sudokuapp.core.util.Resource
 import com.mahiiru.sudokuapp.feature_sudoku.domain.model.SudokuPuzzle
 import com.mahiiru.sudokuapp.feature_sudoku.domain.repository.ISudokuRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.File
@@ -12,13 +13,15 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val FILE_NAME = "game_state.txt"
 
 
-//TODO Dagger Hilt
-class SudokuRepositoryImpl(
-    private val context: Context,
+@Singleton
+class SudokuRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
     fileStorageDirectory: String = context.filesDir.path,
     private val pathToStorageFile: File = File(fileStorageDirectory, FILE_NAME)
 ) : ISudokuRepository {

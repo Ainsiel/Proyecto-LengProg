@@ -21,7 +21,8 @@ private val DarkColorScheme = darkColorScheme(
     surface = lightGreyAlpha,
     onPrimary = highlightedCellsDark,
     onSurface = highlightedCellsDark,
-    inversePrimary = cellBordersDark
+    inversePrimary = cellBordersDark,
+    onTertiary = editableNumbersDark
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -30,7 +31,8 @@ private val LightColorScheme = lightColorScheme(
     surface = lightGrey,
     onPrimary = highlightedCellsLight,
     onSurface = highlightedCellsLight,
-    inversePrimary = cellBordersLight
+    inversePrimary = cellBordersLight,
+    onTertiary = editableNumbersLight
 )
 
 @Composable
