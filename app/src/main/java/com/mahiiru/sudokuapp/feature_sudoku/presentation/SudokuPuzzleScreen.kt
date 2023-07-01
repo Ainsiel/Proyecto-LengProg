@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,6 +62,8 @@ fun SudokuPuzzleScreen(
             horizontalAlignment = Alignment.CenterHorizontally) {
             SudokuBoard(onEventHandler = viewModel::onEvent, viewModel = viewModel)
         }
+        Spacer(modifier = Modifier.height(50.dp))
+        InputButtonRow(onEventHandler = viewModel::onEvent)
     }
 }
 
@@ -93,7 +96,7 @@ fun SudokuBoard(
     viewModel: SudokuPuzzleViewModel
 ) {
     val boundary = viewModel.state.boundary
-    val boardSate = viewModel.state.puzzle
+    val boardState = viewModel.state.puzzle
 
     Column(
         modifier = Modifier
@@ -115,7 +118,7 @@ fun SudokuBoard(
                             .weight(0.5f)
                             .fillMaxSize(),
                         onEventHandler = onEventHandler,
-                        tile = boardSate[tileKey]!!)
+                        tile = boardState[tileKey]!!)
                 }
             }
         }
@@ -126,15 +129,82 @@ fun SudokuBoard(
 fun SudokuTextField(
     modifier: Modifier,
     onEventHandler: (SudokuPuzzleEvent) -> Unit,
-    tile: SudokuTile
+    tile: SudokuTile,
+) {
+    var text = tile.value.toString()
+
+    Column(
+        modifier = modifier
+            .border(width = 1.dp, color = MaterialTheme.colorScheme.inversePrimary)
+            .background(color = MaterialTheme.colorScheme.surface),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        if (text == "0") text = ""
+
+        if (!tile.readOnly) {
+            Text(
+                text = text,
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier
+                    .clickable {
+                        onEventHandler
+                            .invoke(
+                                SudokuPuzzleEvent.OnTileFocused(tile.x,tile.y)
+                            )
+                    }
+            )
+
+        } else {
+            Text(
+                text = text,
+                color = MaterialTheme.colorScheme.secondary
+            )
+        }
+    }
+}
+
+@Composable
+fun InputButtonRow(
+    onEventHandler: (SudokuPuzzleEvent) -> Unit
+) {
+    Row (
+        Modifier
+            .fillMaxWidth()
+            .height(50.dp)) {
+        (1..9).forEach {
+            SudokuInputButton(
+                onEventHandler,
+                it,
+                Modifier
+                    .weight(0.5f)
+                    .fillMaxSize()
+            )
+        }
+    }
+}
+
+@Composable
+fun SudokuInputButton(
+    onEventHandler: (SudokuPuzzleEvent) -> Unit,
+    number: Int,
+    modifier : Modifier
 ) {
     Column(
         modifier = modifier
             .border(width = 1.dp, color = MaterialTheme.colorScheme.inversePrimary)
             .background(color = MaterialTheme.colorScheme.surface),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
-
-        Text(text = tile.value.toString(), color = MaterialTheme.colorScheme.secondary)
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        TextButton(
+            onClick = { onEventHandler.invoke(SudokuPuzzleEvent.OnInput(number)) }
+            ) {
+            Text(
+                text = number.toString(),
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
 }
