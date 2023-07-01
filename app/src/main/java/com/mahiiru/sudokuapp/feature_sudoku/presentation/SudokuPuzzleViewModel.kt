@@ -41,11 +41,9 @@ class SudokuPuzzleViewModel @Inject constructor(
     private fun onInputTile(input: Int) {
         var focusedTile : SudokuTile? = null
         state.puzzle.forEach {
-            if (it.value.hasFocus) focusedTile = it.value
+            if (it.value.hasFocus) focusedTile = it.value.copy()
         }
-        if (focusedTile != null) {
-            updateNodeData(focusedTile!!,input)
-        }
+        if (focusedTile != null) updateNodeData(focusedTile!!,input)
     }
 
     private fun updateNodeData(focusedTile: SudokuTile, input: Int) {
@@ -70,7 +68,7 @@ class SudokuPuzzleViewModel @Inject constructor(
         puzzle.forEach { (key,value) ->
             value.hasFocus = value.x == x && value.y == y
         }
-        state.copy(puzzle = puzzle)
+        state = state.copy(puzzle = puzzle)
     }
 
     private fun validatePuzzle() {

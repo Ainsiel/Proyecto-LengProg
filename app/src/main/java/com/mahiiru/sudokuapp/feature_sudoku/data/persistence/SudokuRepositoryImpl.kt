@@ -49,7 +49,7 @@ class SudokuRepositoryImpl @Inject constructor(
         try {
             val game = getGame()
             game.getNode(x,y).color = color
-            updateGame(game)
+            updateGameData(game)
             emit(Resource.Success(game))
         } catch (e: Exception) {
             emit(Resource.Error("Couldn't update the node."))
